@@ -801,10 +801,6 @@ def indexar_diretorio(diretorio):
     conn.commit()  # Salva mudanças no banco
     conn.close()  # Fecha a conexão
 
-    # Atualiza todos os embeddings no banco de dados
-    print("\nAtualizando banco de dados com todos os embeddings...")
-    atualizar_todos_embeddings()
-
     # Exibe resumo final
     print(f"\n\033[34mIndexação concluída! {novos_arquivos} novos arquivos foram indexados.\033[0m")
     if arquivos_ignorados > 0:
@@ -814,14 +810,39 @@ def indexar_diretorio(diretorio):
     else:
         print("\n\033[34mNenhum novo arquivo foi encontrado para indexação.\033[0m")
 
+    #EMBEDDINGS
+    while True:
+
+        # Pergunta se o usuário deseja gerar embeddings
+        resposta = input("\nDeseja gerar embeddings e adicioná-los ao banco de dados? (s/n): ").strip().lower()
+
+        if resposta == 's':
+            # Atualiza todos os embeddings no banco de dados
+            print("\nAtualizando banco de dados com todos os embeddings...")
+            atualizar_todos_embeddings()
+            break
+
+        elif resposta == 'n':
+            print("Geração de embeddings cancelada pelo usuário.")
+            break
+
+        else:
+            print("Erro: resposta errada.")
+
 
 def main():
-    diretorio = input("Informe o diretório para indexação: ")  # Solicita diretório ao usuário
-    if os.path.isdir(diretorio):  # Verifica se o diretório existe
-        indexar_diretorio(diretorio)  # Chama a função de indexação
 
-    else:
-        print("Diretório inválido!")
+    while True:
+
+        diretorio = input("Informe o diretório para indexação: ")  # Solicita diretório ao usuário
+
+        if os.path.isdir(diretorio):  # Verifica se o diretório existe
+            indexar_diretorio(diretorio)  # Chama a função de indexação
+            break
+
+        else:
+            print("Diretório inválido!")
+            os.system("cls")
 
 
 if __name__ == "__main__":
